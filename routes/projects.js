@@ -1,8 +1,9 @@
 const express = require("express");
+const router = new express.Router();
 
 const Projects = require("../models/projects");
 
-const router = new express.Router();
+const Middleware = require("./middleware/middleware");
 
 router.get("/", async function (req, res, next) {
     try {
@@ -14,7 +15,7 @@ router.get("/", async function (req, res, next) {
     }
 });
 
-router.post("/add-project", async function (req, res, next) {
+router.post("/add-project", Middleware.ensureAdmin, async function (req, res, next) {
     try {
         const { newProjectData } = req.body;
 
@@ -26,7 +27,7 @@ router.post("/add-project", async function (req, res, next) {
     }
 });
 
-router.patch("/update-project/:projectIdtoUpdate", async function (req, res, next) {
+router.patch("/update-project/:projectIdtoUpdate", Middleware.ensureAdmin, async function (req, res, next) {
     try {
         const { updateData } = req.body;
         const { projectIdtoUpdate } = req.params;
@@ -39,7 +40,7 @@ router.patch("/update-project/:projectIdtoUpdate", async function (req, res, nex
     }
 });
 
-router.delete("/delete-project/:projectIdToDelete", async function (req, res, next) {
+router.delete("/delete-project/:projectIdToDelete", Middleware.ensureAdmin, async function (req, res, next) {
     try {
         const { projectIdToDelete } = req.params;
 

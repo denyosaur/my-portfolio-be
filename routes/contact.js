@@ -1,8 +1,10 @@
 const express = require("express");
 
+const router = new express.Router();
+
 const Contact = require("../models/contact");
 
-const router = new express.Router();
+const Middleware = require("./middleware/middleware");
 
 router.get("/", async function (req, res, next) {
     try {
@@ -14,7 +16,7 @@ router.get("/", async function (req, res, next) {
     }
 });
 
-router.patch("/update-contact", async function (req, res, next) {
+router.patch("/update-contact", Middleware.ensureAdmin, async function (req, res, next) {
     try {
         const { updatedContactInfo } = req.body;
 
