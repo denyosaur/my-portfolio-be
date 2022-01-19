@@ -37,7 +37,7 @@ class Projects {
 
     /* Create Projects
     */
-    static async addProject(newProjectName, newProjectUrl, newGithubUrl1, newGithubUrl2, newProjectImageUrl, newProjectDescriptions) {
+    static async addProject(newProjectData) {
         const res = await db.query(`INSERT INTO projects
                                     (project_name, project_url, github_url1, github_url2, project_image_url, project_descriptions)
                                     VALUES ($1, $2, $3, $4, $5, $6)
@@ -48,14 +48,27 @@ class Projects {
                                               github_url2 AS "githubUrl2",
                                               project_image_url AS "projectImageUrl",
                                               project_descriptions AS "projectDescriptions"`,
-            [id, newProjectName, newProjectUrl, newGithubUrl1, newGithubUrl2, newProjectImageUrl, newProjectDescriptions]);
+            [newProjectData.newProjectName, newProjectData.newProjectUrl, newProjectData.newGithubUrl1, newProjectData.newGithubUrl2, newProjectData.newProjectImageUrl, newProjectData.newProjectDescriptions]);
+
+        return new Projects(res.rows[0].id, res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
+    }
+
+    static async getProject() {
+        const res = await db.query(`SELECT id,
+                                           project_name AS "projectName",
+                                           project_url AS "projectUrl",
+                                           github_url1 AS "githubUrl1",
+                                           github_url2 AS "githubUrl2",
+                                           project_image_url AS "projectImageUrl",
+                                           project_descriptions AS "projectDescriptions",
+                                    FROM projects`);
 
         return new Projects(res.rows[0].id, res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
     }
 
     /* Update Project Info
     */
-    async updateProjectInfo(updateData) {
+    async updateProjectInfo(projectIdtoUpdate, updateData) {
         const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
             updateData,
             {
@@ -79,20 +92,24 @@ class Projects {
                                               github_url2 AS "githubUrl2",
                                               project_image_url AS "projectImageUrl",
                                               project_descriptions AS "projectDescriptions"`,
-            [...values, this.id]);
+            [...values, projectIdtoUpdate]);
 
-        return new Projects(res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
+        if (res.rows[0]) {
+            return new Projects(res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
+        } else {
+            throw new BadRequestError("Project not found.");
+        }
     }
 
     /* Delete Project
     */
-    async deleteProject() {
+    static async deleteProject(id) {
         const res = await db.query(`DELETE
                                     FROM projects
                                     WHERE id = $1
-                                    RETURNING id`, [this.id]);
+                                    RETURNING id AS "deletedId"`, [id]);
         if (res.rows[0]) {
-            return `${this.id} has been deleted.`;
+            return `${res.rows[0].deletedId} has been deleted.`;
         } else {
             throw new BadRequestError("Project not found.");
         }

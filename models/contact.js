@@ -25,7 +25,7 @@ class Contact {
         return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
     }
 
-    async updateContactInfo() {
+    static async updateContactInfo(id, updateData) {
         const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
             updateData,
             {
@@ -37,18 +37,18 @@ class Contact {
             }
         );
 
-        const IdIndex = values.length + 1;
+        const contactIndex = values.length + 1;
 
         const res = await db.query(`UPDATE contact
                                     SET ${setCols}
-                                    WHERE id = $${IdIndex}
+                                    WHERE id = $${contactIndex}
                                     RETURNING id, 
                                               linkedin_url AS "linkedinUrl",
                                               github_profile_url AS "githubProfileUrl",
                                               gmail AS "gmail",
                                               facebook_url AS "facebookUrl",
                                               instagram_url AS "instagramUrl"`,
-            [...values, this.id]);
+            [...values, id]);
 
         return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
     }
