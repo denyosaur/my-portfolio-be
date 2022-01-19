@@ -2,6 +2,9 @@
 
 const db = require("../db");
 
+const { HelperFunctions } = require("../helper/helpers");
+const { BadRequestError } = require("../helper/expressErrors");
+
 class Projects {
     constructor(id, projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions) {
         this.id = id;
@@ -15,7 +18,7 @@ class Projects {
 
     /* Get All Projects
     */
-    static async getProjects() {
+    static async getAllProjects() {
         const res = await db.query(`SELECT id,
                                            project_name AS "projectName",
                                            project_url AS "projectUrl",
@@ -34,36 +37,51 @@ class Projects {
 
     /* Create Projects
     */
-    static async createProject(id, projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions) {
+    static async addProject(newProjectName, newProjectUrl, newGithubUrl1, newGithubUrl2, newProjectImageUrl, newProjectDescriptions) {
         const res = await db.query(`INSERT INTO projects
                                     (project_name, project_url, github_url1, github_url2, project_image_url, project_descriptions)
-                                    VALUES ($1, $2, $3, $4, $5, $6)`,
-            [id, projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions]);
+                                    VALUES ($1, $2, $3, $4, $5, $6)
+                                    RETURNING id, 
+                                              project_name AS "projectName",
+                                              project_url AS "projectUrl",
+                                              github_url1 AS "githubUrl1",
+                                              github_url2 AS "githubUrl2",
+                                              project_image_url AS "projectImageUrl",
+                                              project_descriptions AS "projectDescriptions"`,
+            [id, newProjectName, newProjectUrl, newGithubUrl1, newGithubUrl2, newProjectImageUrl, newProjectDescriptions]);
 
-        return new Contact(id, projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions);
+        return new Projects(res.rows[0].id, res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
     }
 
     /* Update Project Info
     */
-    async updateProjectInfo(projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions) {
-        const res = await db.query(`UPDATE projects
-                                       SET project_name = $1,
-                                           project_url = $2,
-                                           github_url1 = $3,
-                                           github_url2 = $4,
-                                           project_image_url = $5,
-                                           project_descriptions = $6,
-                                       WHERE id = $7
-                                       RETURNING id, 
-                                                 project_name AS "projectName",
-                                                 project_url AS "projectUrl",
-                                                 github_url1 AS "githubUrl1",
-                                                 github_url2 AS "githubUrl2",
-                                                 project_image_url AS "projectImageUrl",
-                                                 project_descriptions AS "projectDescriptions"`,
-            [projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions, this.id]);
+    async updateProjectInfo(updateData) {
+        const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
+            updateData,
+            {
+                projectName: "project_name",
+                projectUrl: "project_url",
+                githubUrl1: "github_url1",
+                githubUrl2: "github_url2",
+                projectImageUrl: "project_image_url",
+                projectDescriptions: "project_descriptions"
+            }
+        );
+        const IdIndex = values.length + 1;
 
-        return new Projects(res.rows[0].id, res.rows[0].username, res.rows[0].deckName, res.rows[0].deckImage);
+        const res = await db.query(`UPDATE projects
+                                    SET ${setCols}
+                                    WHERE id = $${IdIndex}
+                                    RETURNING id, 
+                                              project_name AS "projectName",
+                                              project_url AS "projectUrl",
+                                              github_url1 AS "githubUrl1",
+                                              github_url2 AS "githubUrl2",
+                                              project_image_url AS "projectImageUrl",
+                                              project_descriptions AS "projectDescriptions"`,
+            [...values, this.id]);
+
+        return new Projects(res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
     }
 
     /* Delete Project
@@ -73,8 +91,11 @@ class Projects {
                                     FROM projects
                                     WHERE id = $1
                                     RETURNING id`, [this.id]);
-
-        return res.rows[0];
+        if (res.rows[0]) {
+            return `${this.id} has been deleted.`;
+        } else {
+            throw new BadRequestError("Project not found.");
+        }
     }
 };
 

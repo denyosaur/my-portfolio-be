@@ -13,7 +13,7 @@ function getDatabaseUri() {
         : process.env.DATABASE_URL || "myportfolio";
 };
 
-const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 13;
+const BCRYPT_WORK_FACTOR = process.env.NODE_ENV === "test" ? 1 : 9;
 
 console.log("MyPortfolio Config:".green);
 console.log("SECRET_KEY:".yellow, SECRET_KEY);

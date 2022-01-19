@@ -1,12 +1,12 @@
 INSERT INTO users (username, password, is_admin)
 VALUES ('Daniel',
-        'adminpassword',
+        '$2a$04$ispkCksrGkcAh2B7SjB91.AM70Wziyv3/HtpcEArdIA49tzME1rYm',
         TRUE),
         ('admintest',
-        'password123',
+        '$2a$04$W3uu0D1HG6dCm/z0N.wenOCINBMkwc33A3xVmY/eibxzXaahYZigm',
         TRUE),
         ('notadmin',
-        'notadmin',
+        '$2a$04$HqE5es0OcebQjpDCR9hDueIMcX28uJ5fHXaCJw0OfSLzYnw.62Qsi',
         FALSE);
 
 INSERT INTO projects (project_name, project_url, github_url1, github_url2, project_image_url, project_descriptions)

@@ -12,15 +12,43 @@ class Contact {
         this.instagram_url = instagramUrl;
     }
 
-    static async getContact(id) {
+    static async getContactInfo(id) {
         const res = await db.query(`SELECT id,
                                            linkedin_url AS "linkedinUrl",
                                            github_profile_url AS "githubProfileUrl",
                                            gmail,
                                            facebook_url AS "facebookUrl",
                                            instagram_url AS "instagramUrl"
-                                    FROM cards
+                                    FROM contact
                                     WHERE id = $1`, [id]);
+
+        return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
+    }
+
+    async updateContactInfo() {
+        const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
+            updateData,
+            {
+                linkedinUrl: "linkedin_url",
+                githubProfileUrl: "github_profile_url",
+                gmail: "gmail",
+                facebookUrl: "facebook_url",
+                instagramUrl: "instagram_url"
+            }
+        );
+
+        const IdIndex = values.length + 1;
+
+        const res = await db.query(`UPDATE contact
+                                    SET ${setCols}
+                                    WHERE id = $${IdIndex}
+                                    RETURNING id, 
+                                              linkedin_url AS "linkedinUrl",
+                                              github_profile_url AS "githubProfileUrl",
+                                              gmail AS "gmail",
+                                              facebook_url AS "facebookUrl",
+                                              instagram_url AS "instagramUrl"`,
+            [...values, this.id]);
 
         return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
     }
