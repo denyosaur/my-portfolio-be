@@ -41,11 +41,6 @@
     },
     "additionalProperties": false,
     "required": [
-        "project_name",
-        "project_url",
-        "github_url1",
-        "github_url2",
-        "project_image_url",
-        "project_descriptions"
+        "project_name"
     ]
 }
