@@ -6,9 +6,8 @@ const bcrypt = require("bcrypt");
 const { UnauthorizedError } = require("../helper/expressErrors");
 
 class Users {
-    constructor(username, password) {
+    constructor(username) {
         this.username = username;
-        this.password = password;
         this.isAdmin = isAdmin;
     }
 
@@ -24,7 +23,7 @@ class Users {
         if (res.rows[0]) {
             const isValid = await bcrypt.compare(enteredPassword, hashedPassword);
             if (isValid) {
-                return new Users(username, isAdmin);
+                return new Users(res.rows[0].username, res.rows[0].isAdmin);
             }
         };
 

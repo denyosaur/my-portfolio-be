@@ -1,5 +1,6 @@
 const { BadRequestError } = require("../helper/expressErrors");
 const jsonschema = require("jsonschema");
+const { SECRET_KEY } = require("../config");
 
 class HelperFunctions {
     static sqlUpdateHelper(dataToUpdate, jsToSql) {
@@ -22,14 +23,13 @@ class HelperFunctions {
 
         let payload = {
             username: user.username,
-            userId: user.id,
             isAdmin: user.isAdmin || false,
         };
 
         return jwt.sign(payload, SECRET_KEY);
     }
 
-    static jsonValidate(body, schema) {
+    static validateJson(body, schema) {
         const validate = jsonschema.validate(body, schema);
         if (!validate.valid) {
             const errors = validate.errors.map(error => error.stack);

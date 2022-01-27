@@ -6,6 +6,9 @@ const Contact = require("../models/contact");
 
 const Middleware = require("./middleware/middleware");
 
+const { HelperFunctions } = require("../helper/helpers");
+const userContactInfoUpdate = require("../schemas/userContactInfoUpdate.json");
+
 router.get("/", async function (req, res, next) {
     try {
         const contactInfo = await Contact.getContactInfo();
@@ -18,6 +21,8 @@ router.get("/", async function (req, res, next) {
 
 router.patch("/update-contact", Middleware.ensureAdmin, async function (req, res, next) {
     try {
+        HelperFunctions.validateJson(req.body, userContactInfoUpdate);
+
         const { updatedContactInfo } = req.body;
 
         const contactInfo = await Contact.updateContactInfo(1, updatedContactInfo);

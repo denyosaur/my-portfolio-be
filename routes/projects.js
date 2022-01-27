@@ -5,6 +5,10 @@ const Projects = require("../models/projects");
 
 const Middleware = require("./middleware/middleware");
 
+const { HelperFunctions } = require("../helper/helpers");
+const projectsNew = require("../schemas/projectsNew.json");
+const projectsUpdate = require("../schemas/projectsUpdate.json");
+
 router.get("/", async function (req, res, next) {
     try {
         const projectsInfo = await Projects.getAllProjects();
@@ -17,6 +21,8 @@ router.get("/", async function (req, res, next) {
 
 router.post("/add-project", Middleware.ensureAdmin, async function (req, res, next) {
     try {
+        HelperFunctions.validateJson(req.body, projectsNew);
+
         const { newProjectData } = req.body;
 
         const newProject = await Projects.updateProjectInfo(newProjectData);
@@ -29,6 +35,8 @@ router.post("/add-project", Middleware.ensureAdmin, async function (req, res, ne
 
 router.patch("/update-project/:projectIdtoUpdate", Middleware.ensureAdmin, async function (req, res, next) {
     try {
+        HelperFunctions.validateJson(req.body, projectsUpdate);
+
         const { updateData } = req.body;
         const { projectIdtoUpdate } = req.params;
 

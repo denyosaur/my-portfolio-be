@@ -18,7 +18,7 @@ CREATE TABLE IF NOT EXISTS contact (
     id SERIAL PRIMARY KEY,
     linkedin_url VARCHAR(50),
     github_profile_url VARCHAR(50),
-    gmail VARCHAR(30),
+    email VARCHAR(30),
     facebook_url VARCHAR(50),
     instagram_url VARCHAR(50)
 );

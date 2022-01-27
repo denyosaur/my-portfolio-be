@@ -8,8 +8,7 @@ const router = new express.Router();
 const Users = require("../models/users");
 
 const { HelperFunctions } = require("../helper/helpers");
-const userAuthSchema = require("../schemas/userAuth.json");
-
+const userLogin = require("../schemas/userLogin.json");
 
 /* POST /auth/token: {username,password} => token 
 validate that the username and password are in the right format using jsonschema. if not valid, throw BadRequestError
@@ -19,7 +18,7 @@ create a token with the username
 */
 router.post("/login", async function (req, res, next) {
     try {
-        HelperFunctions.jsonValidate(req.body, userAuthSchema);//validate username and password object schema
+        HelperFunctions.validateJson(req.body, userLogin);//validate username and password object schema
 
         //check that username exists and password is correct
         const { username, password } = req.body;
