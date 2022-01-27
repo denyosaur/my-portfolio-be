@@ -3,7 +3,7 @@
 const db = require("../db");
 
 const { HelperFunctions } = require("../helper/helpers");
-const { BadRequestError } = require("../helper/expressErrors");
+const { BadRequestError } = require("../errors/expressErrors");
 
 class Projects {
     constructor(id, projectName, projectUrl, githubUrl1, githubUrl2, projectImageUrl, projectDescriptions) {

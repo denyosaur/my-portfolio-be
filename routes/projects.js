@@ -3,7 +3,7 @@ const router = new express.Router();
 
 const Projects = require("../models/projects");
 
-const Middleware = require("./middleware/middleware");
+const Middleware = require("../middleware/middleware");
 
 const { HelperFunctions } = require("../helper/helpers");
 const projectsNew = require("../schemas/projectsNew.json");
@@ -59,3 +59,5 @@ router.delete("/delete-project/:projectIdToDelete", Middleware.ensureAdmin, asyn
         return next(error);
     }
 });
+
+module.exports = router;

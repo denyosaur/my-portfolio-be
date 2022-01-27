@@ -3,7 +3,7 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 
-const { UnauthorizedError } = require("../helper/expressErrors");
+const { UnauthorizedError } = require("../errors/expressErrors");
 
 class Users {
     constructor(username) {

@@ -1,4 +1,4 @@
-const { BadRequestError } = require("../helper/expressErrors");
+const { BadRequestError } = require("../errors/expressErrors");
 const jsonschema = require("jsonschema");
 const { SECRET_KEY } = require("../config");
 
