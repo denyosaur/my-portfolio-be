@@ -2,12 +2,14 @@
 
 const db = require("../db");
 
+const HelperFunctions = require("../helper/helpers");
+
 class Contact {
-    constructor(id, linkedinUrl, githubProfileUrl, gmail, facebookUrl, instagramUrl) {
+    constructor(id, linkedinUrl, githubProfileUrl, email, facebookUrl, instagramUrl) {
         this.id = id;
         this.linkedin_url = linkedinUrl;
         this.github_profile_url = githubProfileUrl;
-        this.gmail = gmail;
+        this.email = email;
         this.facebook_url = facebookUrl;
         this.instagram_url = instagramUrl;
     }
@@ -16,22 +18,23 @@ class Contact {
         const res = await db.query(`SELECT id,
                                            linkedin_url AS "linkedinUrl",
                                            github_profile_url AS "githubProfileUrl",
-                                           gmail,
+                                           email,
                                            facebook_url AS "facebookUrl",
                                            instagram_url AS "instagramUrl"
                                     FROM contact
                                     WHERE id = $1`, [id]);
 
-        return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
+        return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].email, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
     }
 
-    static async updateContactInfo(id, updateData) {
-        const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
-            updateData,
+    static async updateContactInfo(id, dataToUpdate) {
+
+        const { setCols, values } = await HelperFunctions.sqlUpdateHelper(
+            dataToUpdate,
             {
                 linkedinUrl: "linkedin_url",
                 githubProfileUrl: "github_profile_url",
-                gmail: "gmail",
+                email: "email",
                 facebookUrl: "facebook_url",
                 instagramUrl: "instagram_url"
             }
@@ -45,12 +48,12 @@ class Contact {
                                     RETURNING id, 
                                               linkedin_url AS "linkedinUrl",
                                               github_profile_url AS "githubProfileUrl",
-                                              gmail AS "gmail",
+                                              email AS "email",
                                               facebook_url AS "facebookUrl",
                                               instagram_url AS "instagramUrl"`,
             [...values, id]);
 
-        return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].gmail, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
+        return new Contact(res.rows[0].id, res.rows[0].linkedinUrl, res.rows[0].githubProfileUrl, res.rows[0].email, res.rows[0].facebookUrl, res.rows[0].instagramUrl);
     }
 };
 

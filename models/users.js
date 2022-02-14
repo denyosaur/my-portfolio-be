@@ -3,12 +3,15 @@
 const db = require("../db");
 const bcrypt = require("bcrypt");
 
+const HelperFunctions = require("../helper/helpers");
+
 const { UnauthorizedError } = require("../errors/expressErrors");
 
 class Users {
-    constructor(username) {
+    constructor(username, isAdmin = false, token = false) {
         this.username = username;
         this.isAdmin = isAdmin;
+        this.token = token;
     }
 
     static async authenticate(enteredUsername, enteredPassword) {
@@ -21,9 +24,11 @@ class Users {
             [enteredUsername]);
 
         if (res.rows[0]) {
-            const isValid = await bcrypt.compare(enteredPassword, hashedPassword);
+            const isValid = await bcrypt.compare(enteredPassword, res.rows[0].hashedPassword);
             if (isValid) {
-                return new Users(res.rows[0].username, res.rows[0].isAdmin);
+                const token = await HelperFunctions.createToken(res.rows[0]);
+
+                return new Users(res.rows[0].username, res.rows[0].isAdmin, token);
             }
         };
 

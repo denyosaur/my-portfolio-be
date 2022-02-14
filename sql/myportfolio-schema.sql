@@ -1,6 +1,6 @@
 CREATE TABLE IF NOT EXISTS users (
     username VARCHAR(10) PRIMARY KEY,
-    password VARCHAR(20) NOT NULL,
+    password VARCHAR(65) NOT NULL,
     is_admin BOOLEAN NOT NULL DEFAULT FALSE
 );
 

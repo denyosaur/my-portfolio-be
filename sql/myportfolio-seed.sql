@@ -1,12 +1,12 @@
 INSERT INTO users (username, password, is_admin)
 VALUES ('Daniel',
-        '$2a$04$ispkCksrGkcAh2B7SjB91.AM70Wziyv3/HtpcEArdIA49tzME1rYm',
+        '$2a$14$S2v8ZLY4lLf.rFwNbCxdRuFXbo0F6uBt2qVIHafT2znG.A3c4QCNC',
         TRUE),
         ('admintest',
-        '$2a$04$W3uu0D1HG6dCm/z0N.wenOCINBMkwc33A3xVmY/eibxzXaahYZigm',
+        '$2a$14$9cRIWMAHUW0DPvr4TTReJ.vg5VLc4oRWeE3U4K9xIjADQcl5lnS2G',
         TRUE),
         ('notadmin',
-        '$2a$04$HqE5es0OcebQjpDCR9hDueIMcX28uJ5fHXaCJw0OfSLzYnw.62Qsi',
+        '$2a$14$NLlQh8eRgNu2j.x2AvWiAOpkeKmnzc0VslBYQVi8eORcX8nQNwTyG',
         FALSE);
 
 INSERT INTO projects (project_name, project_url, github_url1, github_url2, project_image_url, project_descriptions)
@@ -27,7 +27,7 @@ VALUES (
     'Rocketnews was a practice in the implementation a full-stack web application that utilized both external and internal APIs. The front-end was designed with mobile first in mind, to create the most user friendly experience on mobile devices. Larger screen sizes were then developed in addition to the mobile first design. The back-end was created using RESTful routing conventions. Both internal and external API routing is handled by the back end.'
     );
 
-INSERT INTO contact (linkedin_url, github_profile_url, gmail, facebook_url, instagram_url)
+INSERT INTO contact (linkedin_url, github_profile_url, email, facebook_url, instagram_url)
 VALUES (
     'https://www.linkedin.com/in/danielkim1989/',
     'https://github.com/denyosaur',

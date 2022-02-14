@@ -13,10 +13,11 @@ class Middleware {
     */
     static authenticateJWT(req, res, next) {
         try {
-            const authHeader = req.headers && req.headers.authorization;
+            const authHeader = req.headers && req.headers.token;
 
             if (authHeader) {
                 const token = authHeader.replace(/^[Bb]earer /, "").trim();
+
                 res.locals.user = jwt.verify(token, SECRET_KEY);
             }
             return next();

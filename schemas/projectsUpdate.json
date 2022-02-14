@@ -3,38 +3,37 @@
     "$schema": "http://json-schema.org/draft-07/schema#",
     "type": "object",
     "properties": {
-        "project_name": {
+        "projectName": {
             "description": "project name",
             "type": "string",
             "minLength": 1,
             "maxLength": 50
         },
-        "project_url": {
+        "projectUrl": {
             "description": "project URL",
             "type": "string",
             "minLength": 1,
             "maxLength": 50
         },
-        "github_url1": {
+        "githubUrl1": {
             "description": "github url 1",
             "type": "string",
             "minLength": 1,
-            "maxLength": 30,
-            "format": "email"
+            "maxLength": 50
         },
-        "github_url2": {
+        "githubUrl2": {
             "description": "github url 2",
             "type": "string",
             "minLength": 1,
             "maxLength": 50
         },
-        "project_image_url": {
+        "projectImageUrl": {
             "description": "project image URL",
             "type": "string",
             "minLength": 1,
             "maxLength": 50
         },
-        "project_descriptions": {
+        "projectDescriptions": {
             "description": "project description",
             "type": "string"
         }

@@ -7,7 +7,7 @@ const router = new express.Router();
 
 const Users = require("../models/users");
 
-const { HelperFunctions } = require("../helper/helpers");
+const HelperFunctions = require("../helper/helpers");
 const userLogin = require("../schemas/userLogin.json");
 
 /* POST /auth/token: {username,password} => token 
@@ -24,9 +24,8 @@ router.post("/login", async function (req, res, next) {
         const { username, password } = req.body;
 
         const user = await Users.authenticate(username, password);
-        const token = HelperFunctions.createToken(user);
 
-        return res.status(200).res.json({ token });
+        return res.status(200).json({ user });
     } catch (error) {
         return next(error);
     };

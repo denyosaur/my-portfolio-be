@@ -2,7 +2,7 @@
 
 const db = require("../db");
 
-const { HelperFunctions } = require("../helper/helpers");
+const HelperFunctions = require("../helper/helpers");
 const { BadRequestError } = require("../errors/expressErrors");
 
 class Projects {
@@ -25,7 +25,7 @@ class Projects {
                                            github_url1 AS "githubUrl1",
                                            github_url2 AS "githubUrl2",
                                            project_image_url AS "projectImageUrl",
-                                           project_descriptions AS "projectDescriptions",
+                                           project_descriptions AS "projectDescriptions"
                                     FROM projects`);
 
         const projectsArray = res.rows.map(project => {
@@ -48,28 +48,29 @@ class Projects {
                                               github_url2 AS "githubUrl2",
                                               project_image_url AS "projectImageUrl",
                                               project_descriptions AS "projectDescriptions"`,
-            [newProjectData.newProjectName, newProjectData.newProjectUrl, newProjectData.newGithubUrl1, newProjectData.newGithubUrl2, newProjectData.newProjectImageUrl, newProjectData.newProjectDescriptions]);
+            [newProjectData.projectName, newProjectData.projectUrl, newProjectData.githubUrl1, newProjectData.githubUrl2, newProjectData.projectImageUrl, newProjectData.projectDescriptions]);
 
         return new Projects(res.rows[0].id, res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
     }
 
-    static async getProject() {
+    static async getProject(id) {
         const res = await db.query(`SELECT id,
                                            project_name AS "projectName",
                                            project_url AS "projectUrl",
                                            github_url1 AS "githubUrl1",
                                            github_url2 AS "githubUrl2",
                                            project_image_url AS "projectImageUrl",
-                                           project_descriptions AS "projectDescriptions",
-                                    FROM projects`);
+                                           project_descriptions AS "projectDescriptions"
+                                    FROM projects
+                                    WHERE id = $1`, [id]);
 
         return new Projects(res.rows[0].id, res.rows[0].projectName, res.rows[0].projectUrl, res.rows[0].githubUrl1, res.rows[0].githubUrl2, res.rows[0].projectImageUrl, res.rows[0].projectDescriptions);
     }
 
     /* Update Project Info
     */
-    async updateProjectInfo(projectIdtoUpdate, updateData) {
-        const { setCols, values } = HelperFunctions.sqlForPartialUpdate(
+    static async updateProjectInfo(projectIdtoUpdate, updateData) {
+        const { setCols, values } = await HelperFunctions.sqlUpdateHelper(
             updateData,
             {
                 projectName: "project_name",
